@@ -1,26 +1,30 @@
 ﻿(function () {
-    const merge = (left, right) => {
-        const result = [];
-        while (left.length && right.length) {
-            if (left[0] < right[0]) {
-                result.push(left.shift())
-            } else {
-                result.push(right.shift())
-            }
+
+    const quickSort = function (left = 0, right = this.length - 1) {
+        if (right - left <= 0) {
+            return;
+        }
+        const pivot = this[right];
+
+        let i = left;
+        let j = right - 1;
+
+        while (true) {
+            while (this[i] < pivot) { i++ }
+            while (j > 0 && this[j] > pivot) { j--; }
+
+            if (i >= j) { break };
+            ([this[i], this[j]] = [this[j], this[i]])
         }
 
-        return [...result, ...left, ...right];
-    }
+        [this[i], this[right]] = [this[right], this[i]];
 
-    const mergeSort = (array = []) => {
-        if (array.length < 2) {
-            return array
-        }
-        const mid = (array.length / 2);
-        const left = array.slice(0, mid);
-        const right = array.slice(mid);
-        return merge(mergeSort(left), mergeSort(right));
+        this.quickSort(left, i - 1);
+        this.quickSort(i + 1, right);
+
+        return this;
     }
+    Array.prototype.quickSort = quickSort
 
     const getRandomNumber = (max) => Math.floor(Math.random() * Math.floor(max));
 
@@ -47,8 +51,9 @@
         arrayObj.suffle();
         render();
     });
+
     sortButton.addEventListener('click', (e) => {
-        arrayObj.splice(0, arrayObj.length, ...mergeSort(arrayObj));
+        arrayObj.quickSort();
         render();
     });
 })()
